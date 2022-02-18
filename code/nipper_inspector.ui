@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>471</width>
+    <height>137</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="pushButton_LED1">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>LED1</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_LED2">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>10</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>LED2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_LED3">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>10</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>LED3</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_LED4">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>10</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>LED4</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>471</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_LED1</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>button_generate_Click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>490</x>
+     <y>552</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>584</x>
+     <y>511</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_LED2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>button_speed_check()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>622</x>
+     <y>547</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>695</x>
+     <y>560</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_LED3</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>button_acceleration_check()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>744</x>
+     <y>534</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>772</x>
+     <y>687</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_LED4</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>button_curvature_check()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>836</x>
+     <y>527</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>967</x>
+     <y>688</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>setTextHelloWorld()</slot>
+  <slot>button_generate_Click()</slot>
+  <slot>button_export_Click()</slot>
+  <slot>button_cell_up_Click()</slot>
+  <slot>button_cell_down_Click()</slot>
+  <slot>cell_changed()</slot>
+  <slot>button_cell_add_Click()</slot>
+  <slot>button_cell_delete_Click()</slot>
+  <slot>button_select_settingfile()</slot>
+  <slot>button_export_settingfile()</slot>
+  <slot>button_open_map()</slot>
+  <slot>button_adjust_origin()</slot>
+  <slot>button_speed_check()</slot>
+  <slot>button_acceleration_check()</slot>
+  <slot>button_curvature_check()</slot>
+ </slots>
+</ui>
