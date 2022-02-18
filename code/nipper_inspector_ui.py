@@ -37,10 +37,10 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.pushButton_LED1.clicked.connect(MainWindow.button_generate_Click)
-        self.pushButton_LED2.clicked.connect(MainWindow.button_speed_check)
-        self.pushButton_LED3.clicked.connect(MainWindow.button_acceleration_check)
-        self.pushButton_LED4.clicked.connect(MainWindow.button_curvature_check)
+        self.pushButton_LED1.clicked.connect(MainWindow.button_click_LED1)
+        self.pushButton_LED2.clicked.connect(MainWindow.button_click_LED2)
+        self.pushButton_LED3.clicked.connect(MainWindow.button_click_LED3)
+        self.pushButton_LED4.clicked.connect(MainWindow.button_click_LED4)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
