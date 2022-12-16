@@ -16,6 +16,8 @@ import threading
 
 import matplotlib.pyplot as plt
 
+import detector
+
 led_list = [0, 0, 0, 0, 0, 0, 0, 0]
 frame = None
 
@@ -81,28 +83,40 @@ class NipperInspectorGui(QMainWindow, Ui_MainWindow):
             led_list[7] = 0
         print("[info] LED8 clicked.")
 
+    def button_click_all_on(self):
+        print("[info] all on clicked.")
+        for i in range(len(led_list)):
+            led_list[i] = 1
+
+    def button_click_all_off(self):
+        print("[info] all off clicked.")
+        for i in range(len(led_list)):
+            led_list[i] = 0
+
     def button_click_FlowCapture(self):
         global led_list
-        project_folder_path = os.path.dirname(os.path.abspath(__file__))
+        project_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
         save_folder_path = os.path.join(project_folder_path, "img", datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
+        
+        led_flash_patterns = [[1, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 1, 0, 0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0, 0, 1, 0],
+                    [0, 0, 0, 1, 0, 0, 0, 1]]
+        for led_flash_pattern in led_flash_patterns:
+            led_list = led_flash_pattern
+            time.sleep(3)
+            cap = cv2.VideoCapture(1)
+            global frame
+            ret, frame = cap.read()
+            saveImg(frame, save_folder_path)
 
-        # led_list = [0, 0, 0, 0]
-        # time.sleep(3)
-        # led_list = [0, 0, 0, 1]
-        # time.sleep(3)
-        # led_list = [0, 0, 1, 0]
-        # time.sleep(3)
-        # led_list = [0, 1, 0, 0]
-        # time.sleep(3)
-        # led_list = [1, 0, 0, 0]
-        # time.sleep(2)
-        for i in range(2**len(led_list)):
-            for j in range(len(led_list)):
-                led_list[j] = (i >> j) & 1
-            time.sleep(5)
-            # saveImg(frame, save_folder_path)
 
-        led_list = [0, 0, 0, 0, 0, 0, 0, 0]
+
+        img_paths = sorted(glob.glob(os.path.join(save_folder_path, "*")))
+        imgs = [cv2.imread(img_path) for img_path in img_paths]
+
+        d = detector.detector()
+        d.detect(imgs)
 
 # 入力変数に対応した通信用電文を返す
 def getSendData(led_list):
@@ -118,7 +132,7 @@ def getSendData(led_list):
 
 def communiacateMbed():
     while(1):
-        ser = serial.Serial('COM6', timeout=2)
+        ser = serial.Serial('/dev/tty.usbmodem11202', timeout=2)
 
         send_num = getSendData(led_list)
         send_byte = send_num.to_bytes(1, 'little')
@@ -137,7 +151,6 @@ def communiacateMbed():
         # print(led_list)
         # print(line.decode('utf-8'))
 
-
 def saveImg(frame, save_folder_path):
     os.makedirs(save_folder_path, exist_ok=True)
     file_num = len(glob.glob(os.path.join(save_folder_path, '*')))
@@ -147,34 +160,32 @@ def saveImg(frame, save_folder_path):
 
 def camera():
     print("a")
-#     # VideoCaptureのインスタンスを作成する。
-#     # 引数でカメラを選べれる。
-#     cap = cv2.VideoCapture(0)
+    # VideoCaptureのインスタンスを作成する。
+    # 引数でカメラを選べれる。
+    cap = cv2.VideoCapture(1)
 
-#     # 画像の保存先フォルダ名の生成
-#     project_folder_path = os.path.dirname(os.path.abspath(__file__))
-#     save_folder_path = os.path.join(project_folder_path, "img", datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
+    # 画像の保存先フォルダ名の生成
+    project_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+    save_folder_path = os.path.join(project_folder_path, "img", datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
 
-#     while True:
-#         # VideoCaptureから1フレーム読み込む
-#         global frame
-#         ret, frame = cap.read()
+    while True:
+        # VideoCaptureから1フレーム読み込む
+        global frame
+        ret, frame = cap.read()
 
-#         # スクリーンショットを撮りたい関係で1/4サイズに縮小
-#         frame = cv2.resize(frame, (int(frame.shape[1]/1), int(frame.shape[0]/1)))
-#         # 加工なし画像を表示する
-#         cv2.imshow('Raw Frame', frame)
+        # 加工なし画像を表示する
+        cv2.imshow('img', cv2.resize(frame, (frame.shape[1]//2, frame.shape[0]//2)))
 
-#         # キー入力を1ms待って、k が27（ESC）だったらBreakする
-#         k = cv2.waitKey(1)
-#         if k == 115:
-#             saveImg(frame, save_folder_path)
-#         if k == 27:
-#             break
+        # キー入力を1ms待って、k が27（ESC）だったらBreakする
+        k = cv2.waitKey(1)
+        if k == 115:
+            saveImg(frame, save_folder_path)
+        if k == 27:
+            break
 
-#     # キャプチャをリリースして、ウィンドウをすべて閉じる
-#     cap.release()
-#     cv2.destroyAllWindows()
+    # キャプチャをリリースして、ウィンドウをすべて閉じる
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
