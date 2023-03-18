@@ -93,7 +93,7 @@ class NipperInspectorGui(QMainWindow, Ui_MainWindow):
         for i in range(len(led_list)):
             led_list[i] = 0
 
-    def button_click_FlowCapture(self):
+    def flowCapture(self):
         global led_list
         project_folder_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
         save_folder_path = os.path.join(project_folder_path, "img", datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
@@ -118,6 +118,10 @@ class NipperInspectorGui(QMainWindow, Ui_MainWindow):
         d = detector.detector()
         d.detect(imgs)
 
+    def button_click_FlowCapture(self):
+        thread_flow_capture = threading.Thread(target=self.flowCapture)
+        thread_flow_capture.start()
+
 # 入力変数に対応した通信用電文を返す
 def getSendData(led_list):
     print(led_list)
@@ -131,9 +135,8 @@ def getSendData(led_list):
 
 
 def communiacateMbed():
+    ser = serial.Serial('/dev/tty.usbmodem112202', timeout=2)
     while(1):
-        ser = serial.Serial('/dev/tty.usbmodem11202', timeout=2)
-
         send_num = getSendData(led_list)
         send_byte = send_num.to_bytes(1, 'little')
 
@@ -144,8 +147,8 @@ def communiacateMbed():
 
         ser.write(send_byte)
 
-        line = ser.readline()  # 行終端'¥n'までリードする
-        ser.close()
+        # line = ser.readline()  # 行終端'¥n'までリードする
+        # ser.close()
 
         # time.sleep(0.01)
         # print(led_list)
