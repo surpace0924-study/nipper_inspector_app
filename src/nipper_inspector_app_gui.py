@@ -20,6 +20,7 @@ import detector
 
 led_list = [0, 0, 0, 0, 0, 0, 0, 0]
 frame = None
+result = None
 
 class NipperInspectorGui(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -114,9 +115,13 @@ class NipperInspectorGui(QMainWindow, Ui_MainWindow):
 
         img_paths = sorted(glob.glob(os.path.join(save_folder_path, "*")))
         imgs = [cv2.imread(img_path) for img_path in img_paths]
+        global result
 
         d = detector.detector()
-        d.detect(imgs)
+        result = d.detect(imgs)
+        # plt.imshow(np.asarray(cv2.cvtColor(detected_img, cv2.COLOR_BGR2RGB)))
+        # plt.show()
+
 
     def button_click_FlowCapture(self):
         thread_flow_capture = threading.Thread(target=self.flowCapture)
@@ -124,7 +129,7 @@ class NipperInspectorGui(QMainWindow, Ui_MainWindow):
 
 # 入力変数に対応した通信用電文を返す
 def getSendData(led_list):
-    print(led_list)
+    # print(led_list)
 
     # 通信電文数値に変換
     send_num_int = 0
@@ -135,15 +140,15 @@ def getSendData(led_list):
 
 
 def communiacateMbed():
-    ser = serial.Serial('/dev/tty.usbmodem112202', timeout=2)
+    ser = serial.Serial('/dev/tty.usbmodem11102', timeout=2)
     while(1):
         send_num = getSendData(led_list)
         send_byte = send_num.to_bytes(1, 'little')
 
-        print("---")
-        print(send_byte)
-        print(send_byte.hex())
-        print("---")
+        # print("---")
+        # print(send_byte)
+        # print(send_byte.hex())
+        # print("---")
 
         ser.write(send_byte)
 
@@ -190,6 +195,15 @@ def camera():
     cap.release()
     cv2.destroyAllWindows()
 
+def showResult():
+    prev_result = None
+    while True:
+        global result
+        try:
+            cv2.imshow('result', cv2.resize(result, (result.shape[1]*2, result.shape[0]*2)))
+        except:
+            pass
+
 
 if __name__ == '__main__':
     argvs = sys.argv
@@ -200,6 +214,9 @@ if __name__ == '__main__':
 
     thread_camera = threading.Thread(target=camera)
     thread_camera.start()
+
+    thread_result = threading.Thread(target=showResult)
+    thread_result.start()
 
     nipper_inspector_gui = NipperInspectorGui()
     nipper_inspector_gui.show()

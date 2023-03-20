@@ -209,8 +209,6 @@ class detector:
         img_diff_gray = cv2.equalizeHist(anomaly_map)
 
         heatnap = self.getHeatmap(img_diff_gray)
-
-        plt.imshow(np.asarray(cv2.cvtColor(heatnap, cv2.COLOR_BGR2RGB)))
-        plt.show()
+        return heatnap
 
 
